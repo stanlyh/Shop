@@ -13,7 +13,6 @@ namespace Shop.Web.Controllers
     using Microsoft.EntityFrameworkCore;
     using Shop.Web.Models;
 
-    [Authorize]
     public class ProductsController : Controller
     {
         private readonly IProductRepository productRepository;
@@ -36,19 +35,20 @@ namespace Shop.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var product = await this.productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(product);
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -107,17 +107,18 @@ namespace Shop.Web.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return View(this.productRepository.GetAll().OrderBy(p => p.Name));
             }
 
             var product = await this.productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return View(this.productRepository.GetAll().OrderBy(p => p.Name));
             }
 
             var view = this.ToProductViewModel(product);
@@ -178,7 +179,7 @@ namespace Shop.Web.Controllers
                 {
                     if (!await this.productRepository.ExistAsync(view.Id))
                     {
-                        return NotFound();
+                        return View(this.productRepository.GetAll().OrderBy(p => p.Name));
                     }
                     else
                     {
@@ -196,13 +197,13 @@ namespace Shop.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View(this.productRepository.GetAll().OrderBy(p => p.Name));
             }
 
             var product = await this.productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return View(this.productRepository.GetAll().OrderBy(p => p.Name));
             }
 
             return View(product);
@@ -217,6 +218,12 @@ namespace Shop.Web.Controllers
             await this.productRepository.DeleteAsync(product);
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult ProductNotFound()
+        {
+            return this.View();
+        }
+
     }
 
 }
