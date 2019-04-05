@@ -1,12 +1,12 @@
 ﻿namespace Shop.Web.Controllers.API
 {
     using Data;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using System.Threading.Tasks;
-    using Shop.Web.Helpers;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using Shop.Web.Data.Entities;
+    using Shop.Web.Helpers;
+    using System.Threading.Tasks;      
 
     [Route("api/[Controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

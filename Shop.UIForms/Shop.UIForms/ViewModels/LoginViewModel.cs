@@ -1,6 +1,8 @@
 ﻿namespace Shop.UIForms.ViewModels
 {
     using GalaSoft.MvvmLight.Command;
+    using Newtonsoft.Json;
+    using Shop.Common.Helpers;
     using Shop.Common.Models;
     using Shop.Common.Services;
     using Shop.UIForms.Views;
@@ -13,6 +15,8 @@
         private bool isRunning;
         private bool isEnabled;
         private readonly ApiService apiService;
+
+        public bool IsRemember { get; set; }
 
         public bool IsRunning
         {
@@ -36,8 +40,9 @@
         {
             this.apiService = new ApiService();
             this.IsEnabled = true;
-            this.Email = "eduardo.dev@gmail.com";
-            this.Password = "123456";
+            //this.Email = "eduardo.dev@gmail.com";
+            //this.Password = "123456";
+            this.IsRemember = true;
         }
 
         private async void Login()
@@ -87,8 +92,16 @@
 
             var token = (TokenResponse)response.Result;
             var mainViewModel = MainViewModel.GetInstance();
+            mainViewModel.UserEmail = this.Email;
+            mainViewModel.UserPassword = this.Password;
             mainViewModel.Token = token;
             mainViewModel.Products = new ProductsViewModel();
+
+            Settings.IsRemember = this.IsRemember;
+            Settings.UserEmail = this.Email;
+            Settings.UserPassword = this.Password;
+            Settings.Token = JsonConvert.SerializeObject(token);
+
             Application.Current.MainPage = new MasterPage();
         }
     }
