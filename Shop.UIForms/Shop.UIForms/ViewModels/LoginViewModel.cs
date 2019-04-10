@@ -5,6 +5,7 @@
     using Shop.Common.Helpers;
     using Shop.Common.Models;
     using Shop.Common.Services;
+    using Shop.UIForms.Helpers;
     using Shop.UIForms.Views;
     using System;
     using System.Windows.Input;
@@ -36,6 +37,10 @@
 
         public ICommand LoginCommand => new RelayCommand(Login);
 
+        public ICommand RegisterCommand => new RelayCommand(this.Register);
+
+        public ICommand RememberPasswordCommand => new RelayCommand(this.RememberPassword);
+
         public LoginViewModel()
         {
             this.apiService = new ApiService();
@@ -50,18 +55,18 @@
             if (string.IsNullOrEmpty(this.Email))
             {
                 await Application.Current.MainPage.DisplayAlert(
-                    "Error",
-                    "You must enter an email",
-                    "Accept");
+                    Languages.Error,
+                    Languages.EmailError,
+                    Languages.Accept);
                 return;
             }
 
             if (string.IsNullOrEmpty(this.Password))
             {
                 await Application.Current.MainPage.DisplayAlert(
-                    "Error",
-                    "You must enter an password",
-                    "Accept");
+                     Languages.Error,
+                     Languages.PasswordError,
+                     Languages.Accept);
                 return;
             }
 
@@ -86,7 +91,10 @@
 
             if (!response.IsSuccess)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", "Email or password incorrect.", "Accept");
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    Languages.LoginError,
+                    Languages.Accept);
                 return;
             }
 
@@ -103,6 +111,18 @@
             Settings.Token = JsonConvert.SerializeObject(token);
 
             Application.Current.MainPage = new MasterPage();
+        }
+
+        private async void Register()
+        {
+            MainViewModel.GetInstance().Register = new RegisterViewModel();
+            await Application.Current.MainPage.Navigation.PushAsync(new RegisterPage());
+        }
+
+        private async void RememberPassword()
+        {
+            MainViewModel.GetInstance().RememberPassword = new RememberPasswordViewModel();
+            await Application.Current.MainPage.Navigation.PushAsync(new RememberPasswordPage());
         }
     }
 }
