@@ -4,6 +4,7 @@
     using Common.Helpers;
     using Common.Services;
     using GalaSoft.MvvmLight.Command;
+    using Shop.Common.Models;
     using Xamarin.Forms;
 
     public class RememberPasswordViewModel : BaseViewModel
@@ -53,6 +54,39 @@
                     "Accept");
                 return;
             }
+
+            this.IsRunning = true;
+            this.IsEnabled = false;
+
+            var request = new RecoverPasswordRequest
+            {
+                Email = this.Email
+            };
+
+            var url = Application.Current.Resources["UrlAPI"].ToString();
+            var response = await this.apiService.RecoverPasswordAsync(
+                url,
+                "/api",
+                "/Account/RecoverPassword",
+                request);
+
+            this.IsRunning = false;
+            this.IsEnabled = true;
+
+            if (!response.IsSuccess)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Error",
+                    response.Message,
+                    "Accept");
+                return;
+            }
+
+            await Application.Current.MainPage.DisplayAlert(
+                "Ok",
+                response.Message,
+                "Accept");
+            await Application.Current.MainPage.Navigation.PopAsync();
         }
     }
 }
