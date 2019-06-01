@@ -1,6 +1,6 @@
-﻿using Android.Views;
-using Android.App;
+﻿using Android.App;
 using Android.OS;
+using Android.Views;
 using MvvmCross.Droid.Support.V7.AppCompat;
 using Shop.Common.ViewModels;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
@@ -8,13 +8,13 @@ using Toolbar = Android.Support.V7.Widget.Toolbar;
 namespace Shop.UICross.Android.Views
 {
 
-    [Activity(Label = "@string/add_product")]
-    public class AddProductView : MvxAppCompatActivity<AddProductViewModel>
+    [Activity(Label = "@string/product_details")]
+    public class ProductDetailView : MvxAppCompatActivity<ProductsDetailViewModel>
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            this.SetContentView(Resource.Layout.AddProductPage);
+            this.SetContentView(Resource.Layout.ProductDetailPage);
             var toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
 
@@ -24,7 +24,6 @@ namespace Shop.UICross.Android.Views
                 actionBar.SetDisplayHomeAsUpEnabled(true);
             }
         }
-
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             if (item.ItemId == global::Android.Resource.Id.Home) { OnBackPressed(); }
